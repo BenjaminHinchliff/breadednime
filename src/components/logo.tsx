@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
-import breadImage from "~/assets/images/bread.png";
+import { Bread } from "./icon/bread";
 
 export function Logo() {
   return (
@@ -8,11 +7,7 @@ export function Logo() {
       href="/"
       className="mb-2 text-center align-middle text-6xl font-bold text-indigo-500"
     >
-      <Image
-        className="mb-1 mr-1 inline-block h-9 w-9"
-        src={breadImage}
-        alt="Bread logo"
-      />
+      <Bread color="black" className="mb-1 mr-1 inline-block h-9 w-9" />
       breadnime!
     </Link>
   );
