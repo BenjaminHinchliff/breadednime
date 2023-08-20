@@ -1,13 +1,13 @@
 import Head from "next/head";
-import { api } from "~/utils/api";
 import Image from "next/image";
 import violetImage from "~/assets/images/violet.png";
 import Link from "next/link";
 import { Navbar } from "~/components/navbar";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
+export default function Search({
+  search,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   let dummys = [];
   for (let i = 0; i < 40; i++) {
     dummys.push(
@@ -30,11 +30,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container">
-        <Navbar />
-        <div className="margin-auto mx-auto grid max-w-5xl grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {dummys}
+        <Navbar initSearch={search} />
+        <div className="mx-auto max-w-5xl">
+          <h2 className="my-1 text-2xl">Search results for "{search}"</h2>
+          <div className="margin-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {dummys}
+          </div>
         </div>
       </main>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  search: string;
+}> = async ({ query }) => {
+  const search = (query.q as string) ?? "";
+  return { props: { search } };
+};
