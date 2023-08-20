@@ -17,6 +17,20 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "gogocdn.net",
+        pathname: "/cover/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gogocdn.net",
+        pathname: "/images/**",
+      },
+    ],
+  },
 };
 
 export default config;

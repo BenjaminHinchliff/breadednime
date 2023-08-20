@@ -1,13 +1,9 @@
 import Head from "next/head";
-import { api } from "~/utils/api";
 import Image from "next/image";
 import breadImage from "~/assets/images/bread.png";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
+import { SearchBar } from "~/components/search-bar";
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>
@@ -26,14 +22,7 @@ export default function Home() {
             breadnime!
           </h1>
           <h2 className="text-center text-5xl">Ad-free anime, really!</h2>
-          <div className="my-4 flex flex-row justify-center">
-            <Input
-              className="mr-2 max-w-md focus-visible:ring-primary"
-              type="search"
-              placeholder="Search"
-            />
-            <Button className="font-extrabold">GO!</Button>
-          </div>
+          <SearchBar />
         </div>
       </main>
     </>

@@ -1,26 +1,15 @@
 import Head from "next/head";
-import Image from "next/image";
 import violetImage from "~/assets/images/violet.png";
-import Link from "next/link";
 import { Navbar } from "~/components/navbar";
+import { api } from "~/lib/api";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { ITitle } from "@consumet/extensions";
+import AnimeCard from "~/components/anime-card";
 
 export default function Search({
   search,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  let dummys = [];
-  for (let i = 0; i < 40; i++) {
-    dummys.push(
-      <Link href="" className="m-1">
-        <Image
-          className="rounded-md"
-          src={violetImage}
-          alt="Violet Evergarden Cover Image"
-        />
-        <p className="text-center text-xl">Violet Evergarden</p>
-      </Link>
-    );
-  }
+  const searchQuery = api.search.hello.useQuery({ query: search });
 
   return (
     <>
@@ -34,7 +23,24 @@ export default function Search({
         <div className="mx-auto max-w-5xl">
           <h2 className="my-1 text-2xl">Search results for "{search}"</h2>
           <div className="margin-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {dummys}
+            {searchQuery.data?.results.map((r) => {
+              const { id, title, cover, image } = r;
+              const engTitle =
+                typeof title === "string"
+                  ? (title as string)
+                  : (title as ITitle).english ??
+                  (title as ITitle).romaji ??
+                  (title as ITitle).native ??
+                  "";
+
+              return (
+                <AnimeCard
+                  key={id}
+                  title={engTitle}
+                  cover={cover ?? image ?? ""}
+                />
+              );
+            })}
           </div>
         </div>
       </main>
