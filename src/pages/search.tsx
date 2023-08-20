@@ -52,6 +52,6 @@ export const getServerSideProps: GetServerSideProps<{
   search: string;
 }> = async ({ query }) => {
   const search = (query.q as string) ?? "";
-  helpers.anime.search.prefetch({ search });
+  await helpers.anime.search.prefetch({ search });
   return { props: { trpcState: helpers.dehydrate(), search } };
 };
