@@ -17,22 +17,24 @@ export function SearchBar({ initSearch }: Props) {
   };
 
   return (
-    <div className="my-4 flex flex-row justify-center">
+    <form
+      className="my-4 flex flex-row justify-center"
+      onSubmit={(e) => {
+        e.preventDefault();
+        searchNavigate();
+      }}
+    >
       <Input
         className="mr-2 max-w-md focus-visible:ring-primary"
+        name="q"
         type="search"
         placeholder="Search"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            searchNavigate();
-          }
-        }}
       />
-      <Button className="font-extrabold" onClick={searchNavigate}>
+      <Button className="font-extrabold" type="submit">
         GO!
       </Button>
-    </div>
+    </form>
   );
 }

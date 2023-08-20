@@ -1,15 +1,15 @@
 import Head from "next/head";
-import violetImage from "~/assets/images/violet.png";
 import { Navbar } from "~/components/navbar";
 import { api } from "~/lib/api";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ITitle } from "@consumet/extensions";
 import AnimeCard from "~/components/anime-card";
+import { helpers } from "~/lib/helpers";
 
 export default function Search({
   search,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const searchQuery = api.search.hello.useQuery({ query: search });
+  const searchQuery = api.anime.search.useQuery({ search: search });
 
   return (
     <>
@@ -52,5 +52,6 @@ export const getServerSideProps: GetServerSideProps<{
   search: string;
 }> = async ({ query }) => {
   const search = (query.q as string) ?? "";
-  return { props: { search } };
+  helpers.anime.search.prefetch({ search });
+  return { props: { trpcState: helpers.dehydrate(), search } };
 };

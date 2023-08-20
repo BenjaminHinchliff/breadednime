@@ -6,24 +6,17 @@ interface Props {
   cover: string;
 }
 
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#333" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+const skeleton = `
+<svg width="1" height="1" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <rect width="1" height="1" fill="hsl(240 4.8% 95.9%)" />
 </svg>`;
 
 const toBase64 = (str: string) =>
   typeof window === "undefined"
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
+
+const skeletonData = toBase64(skeleton);
 
 export default function AnimeCard({ title, cover }: Props) {
   return (
@@ -34,10 +27,9 @@ export default function AnimeCard({ title, cover }: Props) {
           src={cover}
           fill={true}
           placeholder="blur"
-          blurDataURL={`data:image/svg+xml;base64,${toBase64(
-            shimmer(700, 475)
-          )}`}
-          alt="Violet Evergarden Cover Image"
+          blurDataURL={`data:image/svg+xml;base64,${skeletonData}`}
+          sizes="20vw"
+          alt={`${title} Cover Image`}
         />{" "}
       </div>
       <p className="text-center text-xl">{title}</p>
