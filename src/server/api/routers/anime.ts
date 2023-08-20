@@ -20,4 +20,9 @@ export const animeRouter = createTRPCRouter({
     .query(({ input }) => {
       return animeSource.fetchAnimeInfo(input.id);
     }),
+  streams: publicProcedure
+    .input(z.object({ episodeId: z.string() }))
+    .query(({ input }) => {
+      return animeSource.fetchEpisodeSources(input.episodeId);
+    }),
 });

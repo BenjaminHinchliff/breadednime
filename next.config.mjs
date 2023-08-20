@@ -31,6 +31,13 @@ const config = {
       },
     ],
   },
+  redirects: async () => [
+    {
+      source: "/anime/:id",
+      destination: "/anime/:id/1",
+      permanent: true,
+    },
+  ],
 };
 
 export default config;
