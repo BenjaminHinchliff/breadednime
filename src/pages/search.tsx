@@ -1,14 +1,9 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import breadImage from "~/assets/images/bread.png";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { Logo } from "~/components/logo";
-import { Search } from "~/components/search";
-import { Skeleton } from "~/components/ui/skeleton";
 import violetImage from "~/assets/images/violet.png";
 import Link from "next/link";
+import { Navbar } from "~/components/navbar";
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -18,7 +13,7 @@ export default function Home() {
     dummys.push(
       <Link href="" className="m-1">
         <Image
-          className="rounded-lg"
+          className="rounded-md"
           src={violetImage}
           alt="Violet Evergarden Cover Image"
         />
@@ -35,10 +30,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container">
-        <div className="mt-2 flex flex-col justify-between md:flex-row">
-          <Logo />
-          <Search />
-        </div>
+        <Navbar />
         <div className="margin-auto mx-auto grid max-w-5xl grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {dummys}
         </div>

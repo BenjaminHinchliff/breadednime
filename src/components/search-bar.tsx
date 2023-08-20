@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-export function Search() {
+export function SearchBar() {
   return (
     <div className="my-4 flex flex-row justify-center">
       <Input
