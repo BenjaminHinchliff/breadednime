@@ -2,7 +2,7 @@ import { Logo } from "./logo";
 import { SearchBar } from "./search-bar";
 
 interface Props {
-  initSearch: string;
+  initSearch?: string;
 }
 
 export function Navbar({ initSearch }: Props) {
