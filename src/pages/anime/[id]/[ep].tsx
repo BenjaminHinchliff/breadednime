@@ -5,18 +5,16 @@ import { Navbar } from "~/components/navbar";
 import { api } from "~/lib/api";
 import { helpers } from "~/lib/helpers";
 import { chooseTitle } from "~/lib/title";
-import ReactPlayer from "react-player/lazy";
-import { useQueryState } from "next-usequerystate";
-import { Button } from "~/components/ui/button";
 import { VideoSkeleton } from "~/components/skeletons/video-skeleton";
+import { VideoPlayer } from "~/components/video-player";
 
 export default function Anime({
   id,
+  episode,
   episodeId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const infoQuery = api.anime.byId.useQuery({ id });
   const streamQuery = api.anime.streams.useQuery({ episodeId });
-  const [quality, setQuality] = useQueryState("p");
 
   const {
     title,
@@ -33,33 +31,10 @@ export default function Anime({
     <>
       <Navbar />
       {streamQuery.data ? (
-        (() => {
-          const sources = streamQuery.data.sources;
-          const targetQuality = quality ?? "default";
-          const source = sources.find((s) => s.quality === targetQuality);
-          return (
-            <>
-              <div className="aspect-video h-full w-full space-y-1">
-                <ReactPlayer
-                  width="100%"
-                  height="100%"
-                  url={source?.url}
-                  controls
-                />
-              </div>
-              <div className="space-x-1">
-                {sources.map(({ quality: sQuality }) => (
-                  <Button
-                    disabled={targetQuality === sQuality}
-                    onClick={() => setQuality(sQuality!)}
-                  >
-                    {sQuality}
-                  </Button>
-                ))}
-              </div>
-            </>
-          );
-        })()
+        <VideoPlayer
+          name={`${title} Episode ${episode}`}
+          sources={streamQuery.data.sources}
+        />
       ) : (
         <VideoSkeleton />
       )}
@@ -111,12 +86,21 @@ export default function Anime({
 export const getServerSideProps: GetServerSideProps<
   {
     id: string;
+    episode: number;
     episodeId: string;
   },
   { id: string; ep: string }
 > = async ({ params }) => {
-  const { id, ep } = params!;
+  const { id, ep: epS } = params!;
   const info = await helpers.anime.byId.fetch({ id });
-  const episodeId = info.episodes![parseInt(ep) - 1]!.id;
-  return { props: { trpcState: helpers.dehydrate(), id, episodeId } };
+  const ep = parseInt(epS);
+  if (isNaN(ep)) {
+    return {
+      notFound: true,
+    };
+  }
+  const episodeId = info.episodes![ep - 1]!.id;
+  return {
+    props: { trpcState: helpers.dehydrate(), id, episode: ep, episodeId },
+  };
 };
