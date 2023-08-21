@@ -1,4 +1,4 @@
-import { Pause, Play, PlayCircle } from "lucide-react";
+import { Maximize, Minimize, Pause, Play, PlayCircle } from "lucide-react";
 import ReactPlayer from "react-player/lazy";
 import { Slider } from "./ui/slider";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { useRef } from "react";
 import { cn } from "~/lib/cn";
 import { queryTypes, useQueryState } from "next-usequerystate";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 interface Props {
   name: string;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function VideoPlayer({ name, sources }: Props) {
+  const fullscreen = useFullScreenHandle();
   const [quality, setQuality] = useQueryState(
     "p",
     queryTypes.string.withDefault("default")
@@ -47,60 +49,79 @@ export function VideoPlayer({ name, sources }: Props) {
   };
 
   return (
-    <div
-      className="relative aspect-video w-full space-y-1 bg-black"
-      onClick={togglePlaying}
-      onMouseMove={() => setProgressCount(0)}
-    >
-      <ReactPlayer
-        ref={videoRef}
-        width="100%"
-        height="100%"
-        url={sources.find((s) => s.quality === quality)?.url}
-        playing={playing}
-        played={played}
-        onReady={handleReady}
-        onProgress={(p) => handleProgress(p.playedSeconds)}
-      />
+    <FullScreen handle={fullscreen}>
       <div
         className={cn(
-          "absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-between text-primary opacity-100 transition-all",
-          !open && "cursor-none opacity-0"
+          "relative h-full w-full space-y-1 overflow-hidden bg-black",
+          !fullscreen.active && "rounded-md"
         )}
+        onClick={togglePlaying}
+        onMouseMove={() => setProgressCount(0)}
       >
-        <p className="ml-3 mt-1 text-3xl">{name}</p>
-        <div className="flex justify-center">
-          {!playing && (
-            <Button className="h-full rounded-full p-0" onClick={togglePlaying}>
-              <PlayCircle size={96} />
-            </Button>
-          )}
-        </div>
+        <ReactPlayer
+          ref={videoRef}
+          width="100%"
+          height="100%"
+          url={sources.find((s) => s.quality === quality)?.url}
+          playing={playing}
+          played={played}
+          onReady={handleReady}
+          onProgress={(p) => handleProgress(p.playedSeconds)}
+        />
         <div
-          className="space-y-2 bg-gradient-to-t from-primary/50 to-black/0 px-2 pb-2"
-          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            "absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-between text-primary opacity-100 transition-all",
+            !open && "cursor-none opacity-0"
+          )}
         >
-          <Slider
-            min={0}
-            max={videoRef.current?.getDuration()}
-            value={[played]}
-            onValueChange={([v]) => {
-              setPlayed(v!);
-              videoRef.current?.seekTo(v!);
-            }}
-          />
-          <div className="mx-2 flex flex-row items-center justify-between">
-            <Button onClick={togglePlaying}>
-              {playing ? <Pause size={32} /> : <Play size={32} />}
-            </Button>
-            <QualityCombobox
-              qualities={sources.map((s) => s.quality!)}
-              value={quality}
-              onValueChange={setQuality}
+          <p className="ml-3 mt-1 text-3xl">{name}</p>
+          <div className="flex justify-center">
+            {!playing && (
+              <Button
+                className="h-full rounded-full p-0"
+                onClick={togglePlaying}
+              >
+                <PlayCircle size={96} />
+              </Button>
+            )}
+          </div>
+          <div
+            className="space-y-2 bg-gradient-to-t from-primary/50 to-black/0 px-2 pb-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Slider
+              min={0}
+              max={videoRef.current?.getDuration()}
+              value={[played]}
+              onValueChange={([v]) => {
+                setPlayed(v!);
+                videoRef.current?.seekTo(v!);
+              }}
             />
+            <div className="mx-2 flex flex-row items-center justify-between">
+              <Button onClick={togglePlaying}>
+                {playing ? <Pause size={32} /> : <Play size={32} />}
+              </Button>
+              <div className="flex flex-row items-center space-x-1">
+                <QualityCombobox
+                  qualities={sources.map((s) => s.quality!)}
+                  value={quality}
+                  onValueChange={setQuality}
+                />
+                {fullscreen.active ? (
+                  <Button onClick={fullscreen.exit}>
+                    <Minimize />
+                  </Button>
+                ) : (
+                  <Button onClick={fullscreen.enter}>
+                    <Maximize />
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </FullScreen>
   );
 }
