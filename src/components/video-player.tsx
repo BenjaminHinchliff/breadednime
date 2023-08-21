@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { cn } from "~/lib/cn";
 import { queryTypes, useQueryState } from "next-usequerystate";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { VolumeBar } from "./volume-bar";
 
 interface Props {
   name: string;
@@ -23,6 +24,7 @@ export function VideoPlayer({ name, sources }: Props) {
   );
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
+  const [volume, setVolume] = useState(0.0);
   const [progressCount, setProgressCount] = useState(0);
   const videoRef = useRef<ReactPlayer>(null);
 
@@ -66,6 +68,7 @@ export function VideoPlayer({ name, sources }: Props) {
             url={sources.find((s) => s.quality === quality)?.url}
             playing={playing}
             played={played}
+            volume={volume}
             onReady={handleReady}
             onProgress={(p) => handleProgress(p.playedSeconds)}
           />
@@ -105,6 +108,7 @@ export function VideoPlayer({ name, sources }: Props) {
                 {playing ? <Pause /> : <Play />}
               </Button>
               <div className="flex flex-row items-center">
+                <VolumeBar volume={volume} onVolumeChange={setVolume} />
                 <QualityCombobox
                   qualities={sources.map((s) => s.quality!)}
                   value={quality}
