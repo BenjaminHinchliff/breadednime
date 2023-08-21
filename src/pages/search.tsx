@@ -20,7 +20,7 @@ export default function Search({
   return (
     <>
       <Navbar initSearch={search} />
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <h2 className="my-1 text-2xl">Search results for "{search}"</h2>
         {searchQuery.data && (
           <>
