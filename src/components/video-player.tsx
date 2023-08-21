@@ -24,7 +24,7 @@ export function VideoPlayer({ name, sources }: Props) {
   );
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
-  const [volume, setVolume] = useState(0.0);
+  const [volume, setVolume] = useState(1.0);
   const [progressCount, setProgressCount] = useState(0);
   const videoRef = useRef<ReactPlayer>(null);
 
