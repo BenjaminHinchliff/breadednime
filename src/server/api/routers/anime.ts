@@ -11,9 +11,9 @@ if (animeSource.isWorking) {
 
 export const animeRouter = createTRPCRouter({
   search: publicProcedure
-    .input(z.object({ search: z.string() }))
+    .input(z.object({ search: z.string(), page: z.number().nullish() }))
     .query(({ input }) => {
-      return animeSource.search(input.search);
+      return animeSource.search(input.search, input.page ?? undefined);
     }),
   byId: publicProcedure
     .input(z.object({ id: z.string() }))
