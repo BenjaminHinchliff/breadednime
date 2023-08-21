@@ -45,7 +45,7 @@ export default function Anime({
           cover={cover ?? image ?? ""}
         />
 
-        <div className="sm:ml-4">
+        <div className="space-y-1 sm:ml-4">
           <div>
             <h1 className="text-4xl">{chooseTitle(title)}</h1>
             {otherName && (
@@ -56,7 +56,7 @@ export default function Anime({
             <p className="mx-0.5 inline-block rounded-full bg-primary px-2 py-0.5 text-primary-foreground">
               {releaseDate}
             </p>
-            <p className="mr-1 inline-block">Genres: </p>
+            <p className="mx-1 inline-block">Genres: </p>
             {genres?.map((g) => (
               <p className="mx-0.5 inline-block rounded-full bg-primary px-2 py-0.5 text-primary-foreground">
                 {g}
