@@ -7,6 +7,7 @@ import { helpers } from "~/lib/helpers";
 import { chooseTitle } from "~/lib/title";
 import { VideoSkeleton } from "~/components/skeletons/video-skeleton";
 import { VideoPlayer } from "~/components/video-player";
+import { z } from "zod";
 
 export default function Anime({
   id,
@@ -83,6 +84,11 @@ export default function Anime({
   );
 }
 
+const slugSchema = z.object({
+  id: z.string(),
+  ep: z.coerce.number(),
+});
+
 export const getServerSideProps: GetServerSideProps<
   {
     id: string;
@@ -91,16 +97,16 @@ export const getServerSideProps: GetServerSideProps<
   },
   { id: string; ep: string }
 > = async ({ params }) => {
-  const { id, ep: epS } = params!;
-  const info = await helpers.anime.byId.fetch({ id });
-  const ep = parseInt(epS);
-  if (isNaN(ep)) {
+  try {
+    const { id, ep } = slugSchema.parse(params);
+    const info = await helpers.anime.byId.fetch({ id });
+    const episodeId = info.episodes![ep - 1]!.id;
+    return {
+      props: { trpcState: helpers.dehydrate(), id, episode: ep, episodeId },
+    };
+  } catch (err) {
     return {
       notFound: true,
     };
   }
-  const episodeId = info.episodes![ep - 1]!.id;
-  return {
-    props: { trpcState: helpers.dehydrate(), id, episode: ep, episodeId },
-  };
 };

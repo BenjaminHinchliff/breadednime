@@ -1,12 +1,13 @@
 import { Pause, Play, PlayCircle } from "lucide-react";
 import ReactPlayer from "react-player/lazy";
 import { Slider } from "./ui/slider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QualityCombobox } from "./quality-combobox";
 import { IVideo } from "@consumet/extensions";
 import { Button } from "./ui/button";
 import { useRef } from "react";
 import { cn } from "~/lib/cn";
+import { queryTypes, useQueryState } from "next-usequerystate";
 
 interface Props {
   name: string;
@@ -14,11 +15,21 @@ interface Props {
 }
 
 export function VideoPlayer({ name, sources }: Props) {
-  const [quality, setQuality] = useState("default");
+  const [quality, setQuality] = useQueryState(
+    "p",
+    queryTypes.string.withDefault("default")
+  );
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
   const [progressCount, setProgressCount] = useState(0);
   const videoRef = useRef<ReactPlayer>(null);
+
+  // validate query string on mount
+  useEffect(() => {
+    if (!sources.some((s) => s.quality === quality)) {
+      setQuality("default");
+    }
+  });
 
   const togglePlaying = () => {
     setPlaying(!playing);
