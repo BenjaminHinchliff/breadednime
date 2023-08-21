@@ -21,7 +21,7 @@ export function QualityCombobox({ qualities, value, onValueChange }: Props) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[97px] justify-between"
+          className="mr-1 w-[97px] justify-between"
         >
           {value
             ? qualities.find((quality) => quality === value)
@@ -30,7 +30,7 @@ export function QualityCombobox({ qualities, value, onValueChange }: Props) {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[97px] p-0"
+        className="mr-1 w-[97px] p-0"
         side="top"
         avoidCollisions={false}
       >

@@ -52,22 +52,24 @@ export function VideoPlayer({ name, sources }: Props) {
     <FullScreen handle={fullscreen}>
       <div
         className={cn(
-          "relative h-full w-full space-y-1 overflow-hidden bg-black",
+          "relative flex h-full w-full flex-col justify-center space-y-1 overflow-hidden bg-black",
           !fullscreen.active && "rounded-md"
         )}
         onClick={togglePlaying}
         onMouseMove={() => setProgressCount(0)}
       >
-        <ReactPlayer
-          ref={videoRef}
-          width="100%"
-          height="100%"
-          url={sources.find((s) => s.quality === quality)?.url}
-          playing={playing}
-          played={played}
-          onReady={handleReady}
-          onProgress={(p) => handleProgress(p.playedSeconds)}
-        />
+        <div className="aspect-video">
+          <ReactPlayer
+            ref={videoRef}
+            width="100%"
+            height="100%"
+            url={sources.find((s) => s.quality === quality)?.url}
+            playing={playing}
+            played={played}
+            onReady={handleReady}
+            onProgress={(p) => handleProgress(p.playedSeconds)}
+          />
+        </div>
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-between text-primary opacity-100 transition-all",
@@ -100,9 +102,9 @@ export function VideoPlayer({ name, sources }: Props) {
             />
             <div className="mx-2 flex flex-row items-center justify-between">
               <Button onClick={togglePlaying}>
-                {playing ? <Pause size={32} /> : <Play size={32} />}
+                {playing ? <Pause /> : <Play />}
               </Button>
-              <div className="flex flex-row items-center space-x-1">
+              <div className="flex flex-row items-center">
                 <QualityCombobox
                   qualities={sources.map((s) => s.quality!)}
                   value={quality}
